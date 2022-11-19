@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp(name="Test", group="Linear Opmode")
 
@@ -15,6 +17,11 @@ public class Test extends LinearOpMode {
     private DcMotor backLeft = null;
     private DcMotor frontRight = null;
     private DcMotor backRight = null;
+    
+    CRServo rightServo = null;
+    CRServo leftServo = null;
+    
+    CRServo clawServo = null;
     
     private double maxDrivePower = 1;
 
@@ -27,6 +34,11 @@ public class Test extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        
+        rightServo = hardwareMap.get(CRServo.class, "rightServo");
+        leftServo = hardwareMap.get(CRServo.class, "leftServo");
+        
+        clawServo = hardwareMap.get(CRServo.class, "clawServo");
         
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
@@ -43,6 +55,11 @@ public class Test extends LinearOpMode {
             backLeft.setPower((leftDrive - leftStrafe)/maxDrivePower);
             frontRight.setPower((rightDrive - rightStrafe)/maxDrivePower);
             backRight.setPower((rightDrive + rightStrafe)/maxDrivePower);
+            
+            rightServo.setPower(gamepad2.right_stick_y);
+            leftServo.setPower(gamepad2.right_stick_y);
+            
+            clawServo.setPower(gamepad2.left_stick_y);
         }
     }
 }

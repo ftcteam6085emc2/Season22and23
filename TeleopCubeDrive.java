@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="Test", group="Linear Opmode")
+@TeleOp(name="TeleopCubeDrive", group="Linear Opmode")
 
-public class Test extends LinearOpMode {
+public class TeleopCubeDrive extends LinearOpMode {
 
     private DcMotor frontLeft = null;
     private DcMotor backLeft = null;
@@ -22,12 +22,12 @@ public class Test extends LinearOpMode {
     
     private Servo clawServo = null;
     
-    private double maxDrivePower = 0.25;
+    private double maxDrivePower = 0.6;
     private double slideSpeed = 1;
     
-    private double offset = 0.5;
+    private double offset = 0.675;
     private double clawClose = 0;
-    private double clawOpen = 0.2;
+    private double clawOpen = 0.75;
 
     @Override
     public void runOpMode() {
@@ -49,15 +49,14 @@ public class Test extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double rightDrive = gamepad1.right_stick_y * maxDrivePower;
-            double leftDrive =  gamepad1.left_stick_y * maxDrivePower;
-            double rightStrafe = gamepad1.right_stick_x * maxDrivePower;
-            double leftStrafe = gamepad1.left_stick_x * maxDrivePower;
+            double drive = gamepad1.left_stick_y;
+            double strafe = -gamepad1.left_stick_x;
+            double turn = -gamepad1.right_stick_x;
             
-            frontLeft.setPower((leftDrive + leftStrafe)/maxDrivePower);
-            backLeft.setPower((leftDrive - leftStrafe)/maxDrivePower);
-            frontRight.setPower((rightDrive - rightStrafe)/maxDrivePower);
-            backRight.setPower((rightDrive + rightStrafe)/maxDrivePower);
+            frontLeft.setPower((drive - strafe + turn) * maxDrivePower);
+            backLeft.setPower((drive + strafe + turn) * maxDrivePower);
+            frontRight.setPower((drive + strafe - turn) * maxDrivePower);
+            backRight.setPower((drive - strafe - turn) * maxDrivePower);
             
             if(gamepad2.right_trigger > 0.25){
                 clawServo.setPosition(clawClose + offset);
@@ -66,9 +65,9 @@ public class Test extends LinearOpMode {
             }
             
             if(gamepad2.dpad_up){
-                linearSlide.setPower(slideSpeed);
-            }else if(gamepad2.dpad_down){
                 linearSlide.setPower(-slideSpeed);
+            }else if(gamepad2.dpad_down){
+                linearSlide.setPower(slideSpeed);
             }else{
                 linearSlide.setPower(0);
             }
